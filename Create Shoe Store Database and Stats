@@ -1,0 +1,42 @@
+--Create a grocery store database
+
+CREATE TABLE store (id INTEGER PRIMARY KEY, name TEXT, quantity INTEGER, aisle INTEGER, price INTEGER);
+
+INSERT INTO store VALUES
+(1, "Nike Killshot 2", 5, 7, 99.99), 
+(2, "Nike Blazer mid 77", 22, 7, 119.99), 
+(3, "Nike Freerun", 4, 2, 49.99),
+(4, "Nike Airforce 1", 7, 1, 69.99), 
+(5, "Nike Dunk low", 24, 2, 189.99), 
+(6, "Adidas Samba Classic", 3, 4, 89.99), 
+(7, "Adidas Forum 84", 8, 1, 79.99), 
+(8, "Adidas UltraBoost 22", 10, 3, 119.99), 
+(9, "Converse Chuck 70", 12, 3, 99.99), 
+(10, "New Balance 505", 1, 5, 349.99)
+(11, "Converse Pro Leather", 7, 4, 109.99), 
+(12, "Reebok Club C", 9, 5, 49.99), 
+(13, "Reebok Beatnik", 4, 2, 59.99), 
+(14, "Reebok Nano X2", 22, 1, 79.99), 
+(15, "Vans Old Skool Classic", 4, 3, 69.99);
+
+--Display from the database ordered by price.
+SELECT * FROM store;
+ORDER BY price dec;
+
+--What is the highest price of the shoes in stock?
+SELECT * FROM store;
+SELECT name, price FROM store
+SELECT MAX(price) FROM store;
+
+--What is the avg price of items in aisle 1?
+SELECT AVG(price) "avg aisle 1 shoe price"
+FROM store
+where section='1';
+
+--What are the shoes that have the most items in stock
+SELECT name, quantity, price
+FROM store
+ORDER BY quantity desc
+limit 5;
+
+
