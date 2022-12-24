@@ -1,0 +1,142 @@
+/* Create table about the people and what they do here */
+
+CREATE TABLE famous_people (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullname TEXT,
+    age INTEGER,
+    bornin TEXT);
+    
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Doja Cat", "27", "Los Angeles, CA");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Selena Gomez", "30", "Grand Prairie, TX");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Georgina Rodriguez", "28",  "Buenos Aires, Argentina");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Christiano Ronaldo", "37", "Funchal, Portugal");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Margot Robbie", "32", "Dalby, Australia");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Angelina Jolie", "47", "Los Angeles, CA");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Brad Pitt", "59", "Shawnee, OK");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("John Green", "45", "Indianapolis, IN");
+INSERT INTO famous_people (fullname, age, bornin) VALUES ("Stephen King", "75", "Portland, ME");
+
+
+CREATE table career (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    name TEXT);
+    
+INSERT INTO career (person_id, name) VALUES (1, "singer");
+INSERT INTO career (person_id, name) VALUES (2, "singer");
+INSERT INTO career (person_id, name) VALUES (2, "entrepreneur");
+INSERT INTO career (person_id, name) VALUES (3, "dancer");
+INSERT INTO career (person_id, name) VALUES (3, "model");
+INSERT INTO career (person_id, name) VALUES (4, "athlete");
+INSERT INTO career (person_id, name) VALUES (4, "model");
+INSERT INTO career (person_id, name) VALUES (4, "entrepreneur");
+INSERT INTO career (person_id, name) VALUES (5, "actor");
+INSERT INTO career (person_id, name) VALUES (6, "actor");
+INSERT INTO career (person_id, name) VALUES (7, "actor");
+INSERT INTO career (person_id, name) VALUES (8, "writer");
+INSERT INTO career (person_id, name) VALUES (9, "writer");
+
+
+CREATE TABLE famous_songs (id INTEGER PRIMARY KEY,
+    person_id INTEGER,
+    title TEXT);
+
+INSERT INTO famous_songs (person_id, title)
+    VALUES (1, "Woman");
+INSERT INTO famous_songs (person_id, title)
+    VALUES (1, "Vegas");
+INSERT INTO famous_songs (person_id, title)
+    VALUES (1, "Need to Know");
+INSERT INTO famous_songs (person_id, title)
+    VALUES (2, "Good For You");
+INSERT INTO famous_songs (person_id, title)
+    VALUES (2, "Same Old Love");
+INSERT INTO famous_songs (person_id, title)
+    VALUES (2, "Fetish");
+
+CREATE TABLE famous_books (id INTEGER PRIMARY KEY,
+    person_id INTEGER,
+    title TEXT);
+
+INSERT INTO famous_books (person_id, title)
+    VALUES (8, "Looking for Alaska");
+INSERT INTO famous_books (person_id, title)
+    VALUES (8, "The Fault in Our Stars");
+INSERT INTO famous_books (person_id, title)
+    VALUES (8, "Paper Towns");
+INSERT INTO famous_books (person_id, title)
+    VALUES (9, "IT");
+INSERT INTO famous_books (person_id, title)
+    VALUES (9, "Carrie");
+INSERT INTO famous_books (person_id, title)
+    VALUES (9, "The Shining");
+
+
+CREATE TABLE famous_movies (id INTEGER PRIMARY KEY,
+    person_id INTEGER,
+    title TEXT);
+
+INSERT INTO famous_movies (person_id, title)
+    VALUES (5, "Babylon");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (5, "Bombshell");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (5, "Birds of Prey");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (6, "Maleficent");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (6, "Mr. and Mrs.Smith");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (6, "Eternals");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (7, "Mr. and Mrs.Smith");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (7, "Fight Club");
+INSERT INTO famous_movies (person_id, title)
+    VALUES (7, "Bullet Train");
+
+
+CREATE TABLE married (id INTEGER PRIMARY KEY,
+    famous_person1_id INTEGER,
+    famous_person2_id INTEGER);
+
+INSERT INTO married (famous_person1_id, famous_person2_id)
+    VALUES(3, 4);
+INSERT INTO married (famous_person1_id, famous_person2_id)
+    VALUES(6, 7);
+    
+SELECT * FROM famous_people;
+SELECT * FROM career;
+SELECT * FROM famous_songs;
+SELECT * FROM famous_books;
+SELECT * FROM married;
+SELECT * FROM famous_movies;
+
+--Movie stars: What movies are they in? 
+SELECT fp.fullname, fm.title
+FROM famous_people fp
+JOIN famous_movies fm
+ON fp.id = fm.person_id;
+
+--Movie stars:Are they married to each other?
+SELECT a.fullname as Actor, b.fullname as Married_To
+FROM married
+JOIN famous_people a
+ON a.id = married.famous_person1_id
+JOIN famous_people b
+ON b.id = married.famous_person2_id;
+
+--Singers: What songs did they write? 
+SELECT fp.fullname, fs.title
+FROM famous_people as fp
+	JOIN famous_songs as fs
+	ON fp.id = fs.person_id; 
+
+--Singers: Where are they from?
+SELECT fullname, bornin FROM famous_people
+
+--Authors: What books did they write?
+SELECT fp.fullname, fb.title
+FROM famous_people as fp
+JOIN famous_books as fb
+ON fp.id = fb.person_id;
