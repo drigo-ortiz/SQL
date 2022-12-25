@@ -1,0 +1,65 @@
+-- Example query (PostgreSQL)
+SELECT * FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info" LIMIT 5;
+
+-- Tips:
+-- (*) Table names containing punctuation, capitalization, or spaces should be
+--     quoted, e.g. "Test Data.csv".
+-- (*) Add more data by using the Upload Data button.
+-- (*) Create additional schemas for namespacing your tables, e.g. "CREATE SCHEMA my_schema;".
+-- (*) When querying tables created outside of the public (default) schema,
+--     be sure to specify the desired schema, e.g. "SELECT * FROM my_schema."my data.csv";".
+
+SELECT 
+np.show_id
+,np.director
+,np.cast
+,nti.title
+,nti.rating
+,nti.duration
+FROM "CharlotteChaze/BreakIntoTech"."netflix_people" as np
+
+LEFT JOIN "CharlotteChaze/BreakIntoTech"."netflix_titles_info" as nti
+ON np.show_id = nti.show_id;
+--#note that nti.duration does not have a comma after it, if so it would interfere with the FROM statement.
+
+--How many movie titles are there in the database? (movies only, not tv shows)
+SELECT COUNT (*)
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info" as nti
+WHERE type = 'Movie';
+--# note that Movie must be capitalized in order to recognize it as a type.
+
+--When was the most recent batch of tv shows and/or movies added to the database?
+SELECT MAX (date(date_added))
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info";
+
+--List all the movies and tv shows in alphabetical order.
+SELECT title
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
+ORDER BY title asc;
+
+--Who was the Director for the movie Bright Star?
+SELECT np.director
+FROM "CharlotteChaze/BreakIntoTech"."netflix_people" as np
+JOIN "CharlotteChaze/BreakIntoTech"."netflix_titles_info" as nti
+ON np.show_id = nti.show_id
+WHERE nti.title = 'Bright Star';
+
+
+--What is the oldest movie in the database and what year was it made?
+--CORRECT CODE: 
+SELECT nti.title, nti.release_year
+FROM "CharlotteChaze/BreakIntoTech"."netflix_people" as np
+JOIN "CharlotteChaze/BreakIntoTech"."netflix_titles_info" as nti
+ON np.show_id = nti.show_id
+ORDER BY release_year asc;
+
+--INCORRECT CODE:
+SELECT title, release_year 
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
+WHERE type = 'Movie'
+AND release_year <= 
+(SELECT MIN(release_year) 
+FROM "CharlotteChaze/BreakIntoTech"."netflix_titles_info"
+WHERE type = 'Movie'); 
+--#This is incorrect because it only pulls up 2 rows of data which are 1942. 
+--#The first code pulls up Pinoneers: First Women Filmmakers released in 1925.
