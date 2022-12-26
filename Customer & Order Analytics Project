@@ -1,0 +1,88 @@
+SELECT * FROM BIT_DB.customers LIMIT 20;
+SELECT * FROM BIT_DB.JanSales LIMIT 20;
+
+--Check to see if there is any messy or inccorect data in the Order Id's
+SELECT * FROM BIT_DB.customers;
+--we can see that some cells have "..." and some simply state the words "Order ID"
+--Ensure to write WHERE order_id <> ‘ ‘ AND order_id <> ‘Order ID’ when calling that column
+
+--#1) How many orders were placed in January? 
+--Remember to filter out the blank and incorrect order IDs like we did in the 
+--"dealing with messy data" section of the previous lesson!
+
+SELECT COUNT(orderid) 
+FROM BIT_DB.JanSales
+WHERE orderid <> ''
+AND orderid <> 'Order ID'
+
+--#2) How many of those orders were for an iPhone?
+
+SELECT COUNT(orderid) 
+FROM BIT_DB.JanSales
+WHERE orderid <> ''
+AND orderid <> 'Order ID'
+AND product = 'iPhone'
+
+--#3) Select the customer account numbers for all the orders that were placed in February.
+SELECT distinct c.acctnum
+FROM BIT_DB.customers as c
+
+INNER JOIN BIT_DB.FebSales as f
+ON c.order_id = f.orderid
+WHERE f.orderid <> ''
+AND f.orderid <> 'Order ID'
+
+--#4) Which product was the cheapest one sold in January, and what was the price?
+SELECT * FROM BIT_DB.JanSales LIMIT 20;
+SELECT Product, MIN(price) 
+FROM BIT_DB.JanSales
+
+GROUP BY product, price 
+ORDER BY price ASC LIMIT 1
+
+
+--#5) What is the total revenue for each product sold in January? 
+--(Revenue can be calculated using the number of products sold and the price of the products).
+
+SELECT orderid, quantity, price, product
+FROM BIT_DB.JanSales
+
+--There are duplicates of products, add up quantity and group by product and price
+SELECT SUM(quantity), price, product
+FROM BIT_DB.JanSales
+GROUP BY product, price
+
+--If we multiply quantity x price, and group by product can answer the question
+SELECT sum(quantity)*price as Revenue, product
+FROM BIT_DB.JanSales
+GROUP BY product
+
+
+--#6) Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, 
+--how many of each were sold, and what was the total revenue?
+SELECT 
+SUM(Quantity),
+Product,
+SUM(Quantity)*price as Revenue
+FROM BIT_DB.FebSales
+WHERE location = '548 Lincoln St, Seattle, WA 98101'
+GROUP BY product
+
+
+--#7) How many customers ordered more than 2 products at a time in February, 
+--and what was the average amount spent for those customers?
+--count(cust.acctnum), avg(quantity)*price, LEFT JOIN BIT_DB.customers
+SELECT * FROM BIT_DB.FebSales LIMIT 20;
+SELECT * FROM BIT_DB.customers LIMIT 20;
+
+--Important to have quantity * price is together 
+--because we are not calculating how much of each product was sold
+--AVG can keep those two together
+SELECT COUNT (distinct c.acctnum), 
+AVG(f.quantity*f.price) as Revenue
+FROM BIT_DB.FebSales as f
+LEFT JOIN BIT_DB.customers as c
+ON f.orderid = c.order_id
+WHERE f.quantity > 2
+AND f.orderid <> ''
+AND f.orderid <> 'Order ID'
