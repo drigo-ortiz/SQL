@@ -1,0 +1,37 @@
+--Examples of Like & %
+##1. 
+SELECT orderdate
+FROM BIT_DB.FebSales
+WHERE orderdate between '02/13/19 00:00' AND '02/18/19 00:00'
+
+##2. 
+SELECT location
+FROM BIT_DB.FebSales 
+WHERE orderdate = '02/18/19 01:35'
+
+##3. 
+SELECT sum(quantity)
+FROM BIT_DB.FebSales 
+WHERE orderdate like '02/18/19%'
+
+SELECT orderdate from BIT_DB.FebSales
+
+##1.
+SELECT distinct Product
+FROM BIT_DB.FebSales
+WHERE Product like '%Batteries%'
+
+##2. 
+SELECT distinct Product, Price
+FROM BIT_DB.FebSales 
+WHERE Price like '%.99'
+
+--List all the products sold in Los Angeles in February, and include how many of each were sold.
+SELECT * FROM BIT_DB.FebSales LIMIT 20;
+SELECT Product, SUM(Quantity)
+FROM BIT_DB.FebSales
+WHERE location like '%Los Angeles%'
+AND orderdate between '02/01/19%' AND '02/28/19%'
+GROUP BY Product
+--In this situation the orderdate between clause is not necessary, since the table is only FebSales
+
