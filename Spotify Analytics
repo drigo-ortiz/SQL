@@ -1,0 +1,85 @@
+# For this project, I downloaded Spotify data from Kaggle.
+# Then I created a table to insert Spotify data into.
+# Finally, I performed analytics on the data using SQL. 
+
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+song_key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+song_mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL )
+
+SELECT * FROM BIT_DB.Spotifydata LIMIT 5
+
+--come up with some of your own questions you'd like to know about the data, and use SQL to answer them. 
+--What is the average danceability by artist and track? 
+SELECT artist_name, track_name, AVG(danceability)
+FROM BIT_DB.SpotifyData
+GROUP BY artist_name, track_name
+
+--Who are the top 10 artists based on popularity? 
+SELECT * FROM BIT_DB.Spotifydata LIMIT 5
+SELECT track_name, artist_name, popularity
+FROM BIT_DB.Spotifydata
+ORDER BY popularity desc
+LIMIT 10
+
+--What artist released the longest song? 
+SELECT * FROM BIT_DB.Spotifydata LIMIT 5
+SELECT artist_name, track_name, MAX(duration_ms)
+FROM BIT_DB.Spotifydata
+
+--What was the speechiness and tempo of the longest song?
+SELECT speechiness, tempo
+FROM BIT_DB.Spotifydata
+WHERE track_name = 'Pepas'
+
+--What's the average danceability for the 10 most popular songs?
+SELECT track_name, AVG(danceability), popularity
+FROM BIT_DB.SpotifyData
+GROUP BY artist_name
+ORDER BY popularity desc
+LIMIT 10
+
+SELECT * FROM BIT_DB.Spotifydata LIMIT 5
+--Which song is the least loudest and most acoustic?
+SELECT artist_name, track_name, MIN(loudness), MAX(acousticness)
+FROM BIT_DB.Spotifydata
+GROUP BY track_name
+LIMIT 1
+
+--Which song had the highest tempo?
+SELECT artist_name, track_name, MAX(tempo)
+FROM BIT_DB.Spotifydata
+GROUP BY track_name
+LIMIT 1
+
+--Who artist had the most songs in the top 50?
+SELECT COUNT (artist_name) as Frequency, artist_name, track_name
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY frequency desc
+LIMIT 3
+
+--What artist had the shortest song?
+SELECT artist_name, track_name, MIN(duration_ms)
+FROM BIT_DB.Spotifydata
+
+--Which song is most likely to be a live recording?
+SELECT artist_name, track_name, liveness
+FROM BIT_DB.Spotifydata
+ORDER BY liveness desc
+LIMIT 1
