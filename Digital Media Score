@@ -1,0 +1,151 @@
+
+--#1)Show Customers (their full names, customer ID, and country) who are not in the US. 
+--(Hint: != or <> can be used to say "is not equal to").
+SELECT * FROM Chinook.customers LIMIT 5
+SELECT firstname, lastname, customerId, country 
+FROM chinook.customers
+WHERE country <> 'USA'
+
+--#2)Show only the Customers from Brazil.
+SELECT firstname, lastname, customerId, country FROM chinook.customers
+WHERE country = 'Brazil'
+
+--#3)Find the Invoices of customers who are from Brazil.
+--The resulting table should show the customer's full name, 
+--Invoice ID, Date of the invoice, and billing country.
+SELECT * FROM Chinook.invoices LIMIT 5
+SELECT * FROM Chinook.customers LIMIT 5
+
+SELECT c.firstname, c.lastname, i.invoiceid, i.invoicedate, i.billingcountry
+FROM chinook.invoices as i
+LEFT JOIN chinook.customers as c
+ON i.customerid = c.customerid
+WHERE i.billingcountry = 'Brazil'
+--Use billing country because that is the code on invoices, not country which is on customers.
+
+--#4)Show the Employees who are Sales Agents
+SELECT * FROM Chinook.employees
+WHERE title like '%agent%'
+
+--#5)Find a unique/distinct list of billing countries from the Invoice table.
+SELECT DISTINCT BillingCountry FROM chinook.Invoices;
+--Don't need to count frequency of billing country to be unique,
+-- simply finding distinct countries is enough for a simple list
+
+--#6)Provide a query that shows the invoices associated with each sales agent. 
+--The resulting table should include the Sales Agent's full name.
+SELECT * FROM Chinook.invoices LIMIT 5
+SELECT * FROM Chinook.customers LIMIT 5
+SELECT * FROM Chinook.employees LIMIT 5
+
+SELECT e.firstname, e.lastname, i.invoiceid
+FROM chinook.employees as e
+JOIN chinook.customers as c
+    ON c.supportrepid = e.employeeid
+JOIN chinook.invoices as i
+    ON i.customerid = c.customerid    
+--Remember that you need to put the database before table, already have a different table named customers
+--supportrepid is related to employee id not title for a join function
+--invoices table has customer id, and so does the customer table as a join function
+
+--#7)Show the Invoice Total, Customer name, Country, 
+--and Sales Agent name for all invoices and customers.
+SELECT * FROM Chinook.invoices LIMIT 5
+SELECT * FROM Chinook.customers LIMIT 5
+SELECT * FROM Chinook.employees LIMIT 5
+
+SELECT  i.total as Invoice_Total, c.firstname, c.lastname, c.country, e.firstname, e.lastname
+FROM chinook.employees as e
+JOIN chinook.customers as c
+    ON c.supportrepid = e.employeeid
+JOIN chinook.invoices as i
+    ON i.customerid = c.customerid    
+
+--#8)How many Invoices were there in 2009?
+SELECT * FROM Chinook.invoices LIMIT 5
+SELECT COUNT (*)
+FROM chinook.invoices 
+WHERE invoicedate between '2009-01-01%' AND '2009-12-31%'
+
+--#9)What are the total sales for 2009?
+SELECT * FROM Chinook.invoices LIMIT 5
+SELECT SUM(i.Total)
+FROM chinook.invoices as i
+WHERE invoicedate between '2009-01-01%' AND '2009-12-31%'
+
+--#10)Write a query that includes the purchased track name with each invoice line ID.
+SELECT * FROM Chinook.tracks LIMIT 5
+SELECT * FROM Chinook.invoice_items LIMIT 5
+
+SELECT t.name as Track_Name, ii.invoicelineid as ID
+FROM chinook.invoice_items as ii
+JOIN chinook.tracks as t
+    ON ii.trackid = t.trackid
+
+--#11)Write a query that includes the purchased track name AND artist name with each invoice line ID.
+SELECT * FROM Chinook.tracks LIMIT 5
+SELECT * FROM Chinook.artists LIMIT 5
+
+SELECT t.name as Track_Name, ar.name as Artist, ii.invoicelineid as ID
+FROM chinook.invoice_items as ii
+LEFT JOIN chinook.tracks as t
+    ON ii.trackid = t.trackid
+INNER JOIN chinook.albums as a
+    ON a.albumid = t.albumid
+LEFT JOIN chinook.artists as ar
+    ON ar.artistid = a.artistid
+--Remember inner join for tracks and album to only match those who have the same id
+--Left join is acceptable for artists and albums because we want to focus on artistid
+--Notice a = t, because join a = on t
+notice ar = a because join ar = on a
+
+--#12)Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+
+SELECT t.name as Track_Name, a.title as Album_Name, M.name as Media_Type, g.name as Genre
+FROM chinook.tracks as t
+JOIN chinook.albums as a
+    ON a.albumid = t.albumid
+JOIN chinook.media_types as m
+    ON m.mediatypeid = t.mediatypeid
+JOIN chinook.genres as g
+    ON g.genreid = t.genreid
+--Here these are all joins, no left joins necessary. 
+--Notice how m = t, because join m = on t
+--Notice how g = t, because join g = on t
+
+--#13)Show the total sales made by each sales agent.
+
+SELECT e.firstname, e.lastname, 
+ROUND(SUM(i.total), 2) as 'Total Sales'
+FROM chinook.employees as e
+
+JOIN chinook.customers as c
+    ON c.supportrepid = e.employeeid
+
+JOIN chinook.invoices as i
+    ON i.customerid = c.customerid
+
+WHERE e.title = 'Sales Support Agent'
+GROUP BY e.firstname
+--Remember that you can use round because we want a $ value
+--Remember that we are not looking for Quantity*Unit Price because SUM of each invoice total = Total Sales
+--Remember to group by firstname so that the SUM function works
+
+--#14)Which sales agent made the most dollars in sales in 2009?
+SELECT e.firstname, e.lastname, 
+ROUND(SUM(i.total), 2) as 'Total Sales'
+FROM chinook.employees as e
+
+JOIN chinook.customers as c
+    ON c.supportrepid = e.employeeid
+
+JOIN chinook.invoices as i
+    ON i.customerid = c.customerid
+
+WHERE e.title = 'Sales Support Agent'
+AND i.invoicedate between '2009-01-01%' AND '2009-12-31%'
+GROUP BY e.firstname
+ORDER BY (round(SUM(i.Total), 2)) DESC 
+LIMIT 1;
+--Remember to use the code before 'Total Sales' so this works
+--Limit 1 to only show relevant information
